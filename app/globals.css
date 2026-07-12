@@ -1,0 +1,225 @@
+/**
+ * app/globals.css
+ * Design system tokens, dark theme, animations, scrollbar styling.
+ */
+@import "tailwindcss";
+
+/* =========================================================================
+   Design Tokens
+   ========================================================================= */
+:root {
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Background layers */
+  --bg-base:    #080810;
+  --bg-surface: #0f0f1a;
+  --bg-card:    #141424;
+  --bg-card-hover: #1a1a2e;
+
+  /* Foreground */
+  --fg-primary:   #f0f0ff;
+  --fg-secondary: #9898b8;
+  --fg-muted:     #4a4a6a;
+
+  /* Accent gradient */
+  --accent-purple: oklch(65% 0.25 280);
+  --accent-blue:   oklch(65% 0.22 240);
+  --accent-teal:   oklch(65% 0.18 200);
+
+  /* Status */
+  --color-pass: #22c55e;
+  --color-warn: #f59e0b;
+  --color-fail: #ef4444;
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-inter);
+  background-color: var(--bg-base);
+  color: var(--fg-primary);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply mono font to code/pre elements */
+code, pre, kbd, samp {
+  font-family: var(--font-mono);
+}
+
+/* =========================================================================
+   Tailwind layer utilities
+   ========================================================================= */
+@layer utilities {
+  .bg-background   { background-color: var(--bg-base); }
+  .bg-surface      { background-color: var(--bg-surface); }
+  .bg-card-base    { background-color: var(--bg-card); }
+  .text-foreground { color: var(--fg-primary); }
+  .font-sans       { font-family: var(--font-inter); }
+  .font-mono       { font-family: var(--font-mono); }
+
+  /* Gradient accent text */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glassmorphism card */
+  .glass-card {
+    background: rgba(20, 20, 36, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Glow effect */
+  .glow-purple {
+    box-shadow: 0 0 24px rgba(139, 92, 246, 0.15);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 24px rgba(59, 130, 246, 0.15);
+  }
+}
+
+/* =========================================================================
+   Custom scrollbar (thought stream / result panels)
+   ========================================================================= */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
+
+/* =========================================================================
+   Skeleton shimmer animation
+   ========================================================================= */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1e1e30 25%,
+    #2a2a42 50%,
+    #1e1e30 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* =========================================================================
+   Pulsing dot animation (for active step)
+   ========================================================================= */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* =========================================================================
+   Score bar transition
+   ========================================================================= */
+.score-bar {
+  transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =========================================================================
+   Textarea (schema + rules inputs)
+   ========================================================================= */
+.schema-textarea {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  resize: none;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--fg-primary);
+  border-radius: 12px;
+  padding: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.schema-textarea:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.schema-textarea::placeholder {
+  color: var(--fg-muted);
+}
+
+/* =========================================================================
+   Submit button
+   ========================================================================= */
+.submit-btn {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+  width: 100%;
+}
+
+.submit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(139, 92, 246, 0.4);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =========================================================================
+   Mesh gradient background (hero)
+   ========================================================================= */
+.mesh-bg {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 10%, rgba(20, 184, 166, 0.04) 0%, transparent 40%),
+    var(--bg-base);
+}
