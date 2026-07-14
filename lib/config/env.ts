@@ -45,6 +45,6 @@ export const devLog = isDev
   ? (label: string, data?: unknown): void => {
       console.log(`[${label}]`, data !== undefined ? data : '')
     }
-  : (_label: string, _data?: unknown): void => {
+  : (): void => {
       // no-op in production
     }

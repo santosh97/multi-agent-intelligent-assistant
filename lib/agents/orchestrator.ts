@@ -58,7 +58,7 @@ export function getOrchestratorConfig(
         inputSchema: z.object({
           ready: z.boolean().describe('Set to true to execute this step'),
         }),
-        execute: async ({ ready: _ready }: { ready: boolean }) => {
+        execute: async () => {
           const hash = hashSchema(context.schemaJson, context.businessRules, context.severityThreshold)
           const cached = lookupSchema(hash)
           if (cached !== null) {
@@ -97,7 +97,7 @@ export function getOrchestratorConfig(
         inputSchema: z.object({
           endpointCount: z.number().optional().describe('The endpointCount returned by runAnalystTool in Step 1'),
         }),
-        execute: async ({ endpointCount: _endpointCount }: { endpointCount?: number }) => {
+        execute: async () => {
           if (pipelineError) return { error: `Pipeline halted due to earlier error: ${pipelineError}. Stop immediately.` }
           if (!analystResult) return { error: "runAnalystTool must be called first. You MUST call only one tool and wait for the result." }
 
@@ -138,7 +138,7 @@ export function getOrchestratorConfig(
             z.string()
           ).describe('A 1-2 sentence recommendation based on the overall findings'),
         }),
-        execute: async ({ recommendation, evaluatorScore: _evaluatorScore }: { recommendation: string; evaluatorScore?: number }) => {
+        execute: async ({ recommendation }: { recommendation: string }) => {
           if (pipelineError) return { error: `Pipeline halted due to earlier error: ${pipelineError}. Stop immediately.` }
           if (!analystResult || !evaluatorResult) return { error: "runAnalystTool and runEvaluatorTool must be called first. You MUST call only one tool and wait for the result." }
 

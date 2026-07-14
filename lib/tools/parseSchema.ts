@@ -150,8 +150,7 @@ const parseSchemaParameters = z.object({
 })
 
 export async function executeParseSchema(
-  args: ParseSchemaInput,
-  _options?: unknown
+  args: ParseSchemaInput
 ): Promise<ParseSchemaToolResult> {
   let parsed: unknown
   try {

@@ -36,7 +36,7 @@ export async function runAnalyst(
             inputSchema: z.object({
               ready: z.boolean().describe('Set to true to execute this step'),
             }),
-            execute: async ({ ready: _ready }: { ready: boolean }) => {
+            execute: async () => {
               return await parseSchema.execute({ schemaJson: task.schemaJson, strictMode: task.strictMode });
             }
           })

@@ -33,7 +33,7 @@ export async function runEvaluator(task: EvaluatorTask): Promise<EvaluatorResult
             inputSchema: z.object({
               ready: z.boolean().describe('Set to true to execute this step'),
             }),
-            execute: async ({ ready: _ready }: { ready: boolean }): Promise<ValidateRulesToolResult> => {
+            execute: async (): Promise<ValidateRulesToolResult> => {
               return await validateRules.execute({
                 analysisResult: task.analysisResult,
                 businessRules: task.businessRules,

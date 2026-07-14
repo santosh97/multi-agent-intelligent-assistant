@@ -105,8 +105,7 @@ export type FormatReportInput = z.infer<typeof OrchestratorOutputSchema>
 // Pure function — directly callable without the AI SDK ToolExecutionOptions
 // ---------------------------------------------------------------------------
 export async function executeFormatReport(
-  args: FormatReportInput,
-  _options?: unknown
+  args: FormatReportInput
 ): Promise<FormatReportToolResult> {
   try {
     const parsed = OrchestratorOutputSchema.safeParse(args)

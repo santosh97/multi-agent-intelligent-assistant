@@ -219,8 +219,7 @@ export type ValidateRulesInput = z.infer<typeof validateRulesParameters>
 // ---------------------------------------------------------------------------
 
 export async function executeValidateRules(
-  args: ValidateRulesInput,
-  _options?: unknown
+  args: ValidateRulesInput
 ): Promise<ValidateRulesToolResult> {
   const parsed = AnalystResultSchema.safeParse(args.analysisResult)
   if (!parsed.success) {
@@ -310,5 +309,5 @@ export const validateRules = {
   description:
     'Checks an AnalystResult against a set of business rules and returns a scored compliance report with violations, passed rules, and a summary.',
   inputSchema: validateRulesParameters,
-  execute: async (args: ValidateRulesInput, _options?: unknown) => executeValidateRules(args),
+  execute: async (args: ValidateRulesInput) => executeValidateRules(args),
 }

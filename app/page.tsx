@@ -211,7 +211,7 @@ export default function Home() {
     // Ensure valid JSON before wasting LLM calls
     try {
       JSON.parse(trimmedSchema)
-    } catch (e) {
+    } catch {
       setValidationError('Invalid JSON format. Please ensure your schema is valid JSON.')
       return
     }
@@ -228,7 +228,7 @@ export default function Home() {
     sendMessage({
       text: `\`\`\`json\n${trimmedSchema}\n\`\`\`\n\nBusiness rules to enforce:\n${rulesInput.split('\n').map(r => '- ' + r).join('\n')}`
     }, { body: { severity } })
-  }, [sendMessage, schemaInput, rulesInput, severity])
+  }, [sendMessage, schemaInput, rulesInput, severity, setMessages])
 
   return (
     <div className="flex min-h-screen flex-col bg-[#09090b] font-sans text-zinc-50 selection:bg-indigo-500/30">
