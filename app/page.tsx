@@ -201,6 +201,26 @@ export default function Home() {
       setValidationError('Please paste an OpenAPI or JSON Schema before submitting.')
       return
     }
+    
+    // Serverless constraint protection
+    if (trimmedSchema.length > 20000) {
+      setValidationError('Schema is too large for this free-tier serverless demo (max 20,000 characters). Please paste a smaller snippet.')
+      return
+    }
+
+    // Ensure valid JSON before wasting LLM calls
+    try {
+      JSON.parse(trimmedSchema)
+    } catch (e) {
+      setValidationError('Invalid JSON format. Please ensure your schema is valid JSON.')
+      return
+    }
+
+    if (!rulesInput.trim()) {
+      setValidationError('Please provide at least one business rule to enforce.')
+      return
+    }
+
     setValidationError(null)
     setMessages([])
 
