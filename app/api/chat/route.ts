@@ -5,7 +5,7 @@
  * AI SDK v7 notes:
  *   - The default useChat transport sends UIMessages with a messages[] array
  *   - convertToModelMessages() converts UIMessage[] → ModelMessage[] for streamText
- *   - Returns result.toDataStreamResponse() for streaming SSE to the client
+ *   - Returns result.toUIMessageStreamResponse() for streaming SSE to the client
  *
  * Rules followed:
  * - export const dynamic = 'force-dynamic'

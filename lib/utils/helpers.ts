@@ -61,3 +61,16 @@ export function extractBusinessRules(content: string): string[] {
     .map(r => r.replace(/^[-*]\s*/, '').trim())
     .filter(r => r.length > 0)
 }
+
+// ---------------------------------------------------------------------------
+// Async Utilities
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns a promise that resolves after `ms` milliseconds.
+ * Used for exponential backoff between retry attempts on transient errors.
+ * Do NOT use for rate-limit (429) errors — those require user action.
+ */
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}

@@ -54,9 +54,9 @@ export function getOrchestratorConfig(
       // ------------------------------------------------------------------
       runAnalystTool: tool({
         description:
-          'Step 1: Parse and analyse the provided API schema by delegating to the Analyst sub-agent.',
+          'Parses and analyses the provided API schema by delegating to the Analyst sub-agent. The Analyst reads the schema, assesses its structure, then extracts endpoint metadata.',
         inputSchema: z.object({
-          ready: z.boolean().describe('Set to true to execute this step'),
+          ready: z.boolean().optional().describe('Optional trigger flag - no value needed'),
         }),
         execute: async () => {
           const hash = hashSchema(context.schemaJson, context.businessRules, context.severityThreshold)
@@ -93,9 +93,9 @@ export function getOrchestratorConfig(
       // ------------------------------------------------------------------
       runEvaluatorTool: tool({
         description:
-          'Step 2: Evaluate the parsed schema against business rules. MUST run after runAnalystTool.',
+          'Validates the parsed schema against business rules. MUST run after runAnalystTool has succeeded. The Evaluator reads the analyst findings, prioritizes rules, and produces a scored compliance report.',
         inputSchema: z.object({
-          endpointCount: z.number().optional().describe('The endpointCount returned by runAnalystTool in Step 1'),
+          endpointCount: z.number().optional().describe('The endpointCount returned by runAnalystTool'),
         }),
         execute: async () => {
           if (pipelineError) return { error: `Pipeline halted due to earlier error: ${pipelineError}. Stop immediately.` }
@@ -117,8 +117,24 @@ export function getOrchestratorConfig(
             }
           }
 
-          // Return a tiny summary to the LLM
-          return { success: evaluatorResult.success, score: evaluatorResult.score, violationsCount: evaluatorResult.violations?.length ?? 0, error: evaluatorResult.error }
+          // Return violation details to the LLM — not just aggregate counts.
+          // This gives the orchestrator the evidence it needs to write a
+          // specific, actionable recommendation in formatReportTool rather
+          // than a generic "fix your API" summary.
+          const violationDetails = (evaluatorResult.violations ?? [])
+            .slice(0, 8) // cap at 8 violations to stay within token budget
+            .map((v) => `[${v.severity.toUpperCase()}] ${v.rule} - ${v.field}`)
+            .join('; ')
+
+          return {
+            success: evaluatorResult.success,
+            score: evaluatorResult.score,
+            violationsCount: evaluatorResult.violations?.length ?? 0,
+            violationDetails: violationDetails || 'No violations found',
+            passedRulesCount: evaluatorResult.passedRules?.length ?? 0,
+            summary: evaluatorResult.summary,
+            error: evaluatorResult.error,
+          }
         },
       }),
 
@@ -127,16 +143,19 @@ export function getOrchestratorConfig(
       // ------------------------------------------------------------------
       formatReportTool: tool({
         description:
-          'Step 3: Format the final audit report using the results from the Evaluator. MUST run after runEvaluatorTool.',
+          'Assembles and returns the final audit report. MUST run after runEvaluatorTool has succeeded. Write a specific, evidence-based recommendation referencing the actual violations found.',
         inputSchema: z.object({
-          evaluatorScore: z.number().optional().describe('The score returned by runEvaluatorTool in Step 2'),
+          evaluatorScore: z.number().optional().describe('The score returned by runEvaluatorTool'),
           // llama-3.1-8b-instant sometimes returns recommendation as an array of strings.
           // z.preprocess coerces array → joined string before validation so execute()
           // always receives a plain string regardless of what the model sends.
           recommendation: z.preprocess(
             (val) => Array.isArray(val) ? val.join(' ') : val,
             z.string()
-          ).describe('A 1-2 sentence recommendation based on the overall findings'),
+          ).describe(
+            'A 1-3 sentence recommendation based on the violationDetails above. ' +
+            'Reference specific violation types and suggest concrete fixes. Keep it plain text.'
+          ),
         }),
         execute: async ({ recommendation }: { recommendation: string }) => {
           if (pipelineError) return { error: `Pipeline halted due to earlier error: ${pipelineError}. Stop immediately.` }

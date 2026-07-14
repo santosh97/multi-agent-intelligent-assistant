@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     'Vercel AI SDK',
     'compliance',
   ],
-  authors: [{ name: 'Your Name' }],
+  authors: [{ name: 'Santosh Dubey' }],
   openGraph: {
     title: 'Smart API Contract Auditor',
     description: 'Multi-agent AI-powered API schema compliance tool.',

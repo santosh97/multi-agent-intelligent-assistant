@@ -109,6 +109,8 @@ const StepCard = React.memo(function StepCard({ step, isLatest, isLoading }: Ste
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
+            aria-label={expanded ? 'Show less content' : 'Show more content'}
+            aria-expanded={expanded}
             className="ml-1 text-[10px] text-slate-500 hover:text-slate-300 underline underline-offset-2 transition-colors"
           >
             {expanded ? 'show less' : 'show more'}
@@ -159,24 +161,14 @@ export const AgentThoughtStream = React.memo(function AgentThoughtStream({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-200">Agent Thought Stream</span>
-          {isLoading && (
-            <span className="flex items-center gap-1 text-xs text-purple-400 animate-pulse">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 inline-block" />
-              Live
-            </span>
-          )}
-        </div>
-        <span className="text-xs text-slate-600 tabular-nums">
-          {steps.length} step{steps.length !== 1 ? 's' : ''}
-        </span>
-      </div>
-
-      {/* Steps list */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+      {/* Steps list — aria-live announces new steps to screen readers */}
+      <div
+        className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent"
+        role="log"
+        aria-live="polite"
+        aria-label="Agent thought stream — live execution steps"
+        aria-atomic="false"
+      >
         {steps.length === 0 ? (
           <EmptyState />
         ) : (

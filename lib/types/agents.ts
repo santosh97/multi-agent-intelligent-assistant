@@ -7,6 +7,62 @@
 import { z } from 'zod'
 
 // ---------------------------------------------------------------------------
+// 0. LLM Assessment types — the meaningful inputs each sub-agent LLM reasons
+//    about before calling its tool. These replace the former { ready: boolean }
+//    dummy trigger, making each LLM call genuinely contribute to the pipeline.
+// ---------------------------------------------------------------------------
+
+/**
+ * What the Analyst LLM must infer from reading the schema excerpt.
+ * These fields are produced by the LLM's reasoning and passed to parseSchema
+ * to confirm schema type and set processing strategy.
+ */
+export const AnalystAssessmentSchema = z.object({
+  schemaType: z
+    .enum(['openapi', 'json-schema', 'unknown'])
+    .describe('The schema type the LLM identified from the excerpt'),
+  estimatedEndpointCount: z
+    .number()
+    .int()
+    .min(0)
+    .describe('Approximate number of endpoint paths the LLM counted in the excerpt'),
+  hasGlobalAuth: z
+    .boolean()
+    .describe('Whether the LLM detected a top-level security array in the schema'),
+})
+export type AnalystAssessment = z.infer<typeof AnalystAssessmentSchema>
+
+/**
+ * What the Evaluator LLM must infer from reading the analyst summary and rules.
+ * These fields are produced by the LLM's reasoning and passed to validateRules
+ * to set rule priority order and adjust scoring emphasis.
+ */
+export const EvaluatorAssessmentSchema = z.object({
+  priorityRules: z
+    .array(z.string())
+    .describe('Business rules the LLM identified as highest risk for this schema, in priority order'),
+  riskLevel: z
+    .enum(['low', 'medium', 'high'])
+    .describe('Overall risk level the LLM assessed based on analyst findings'),
+  reasoning: z
+    .string()
+    .max(300)
+    .describe('Brief explanation of why these rules were prioritized (max 300 chars)'),
+})
+export type EvaluatorAssessment = z.infer<typeof EvaluatorAssessmentSchema>
+
+/**
+ * Structured violation summary passed to the orchestrator's formatReportTool
+ * so the LLM-generated recommendation is evidence-based, not generic.
+ */
+export const ViolationSummarySchema = z.object({
+  rule: z.string(),
+  severity: z.enum(['low', 'medium', 'high']),
+  affectedField: z.string(),
+})
+export type ViolationSummary = z.infer<typeof ViolationSummarySchema>
+
+// ---------------------------------------------------------------------------
 // 1. AgentStep — emitted via onStep callbacks, consumed by AgentThoughtStream
 // ---------------------------------------------------------------------------
 export const AgentStepSchema = z.object({

@@ -96,12 +96,21 @@ export default function Home() {
       if (msg.role !== 'assistant') continue
 
       if (msg.parts) {
+        // Compute a stable base timestamp for this message once.
+        // Using Date.now() inside the forEach loop means all steps in the
+        // same message get near-identical timestamps, making order ambiguous.
+        // Instead: use createdAt if available, else a single Date.now() call,
+        // then add idx * 10ms as a monotonically increasing tiebreaker so
+        // steps within the same message always display in correct visual order.
+        const msgRecord = msg as unknown as Record<string, unknown>
+        const msgBaseTime =
+          msgRecord['createdAt'] instanceof Date
+            ? msgRecord['createdAt'].getTime()
+            // eslint-disable-next-line react-hooks/purity
+            : Date.now()
+
         msg.parts.forEach((part, idx) => {
-          const getStableTimestamp = () => {
-            const msgRecord = msg as unknown as Record<string, unknown>
-            return msgRecord['createdAt'] instanceof Date ? msgRecord['createdAt'].getTime() : Date.now()
-          }
-          const ts = getStableTimestamp()
+          const ts = msgBaseTime + idx * 10 // 10ms tiebreaker per step
 
           if (part.type === 'text' && part.text.trim().length > 0) {
             const id = `${msg.id}-text-${idx}`

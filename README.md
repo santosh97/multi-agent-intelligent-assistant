@@ -75,12 +75,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-### 4. Run Tool Tests (no API key required)
-
-```bash
-npx ts-node --project tsconfig.json scripts/test-tools.ts
-```
-
 ### 5. Type Check
 
 ```bash
