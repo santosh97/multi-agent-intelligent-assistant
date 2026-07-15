@@ -164,6 +164,24 @@ export async function executeParseSchema(
   }
 
   const schemaType = detectSchemaType(parsed)
+
+  // strictMode is load-bearing: if the LLM assessed the schema as a known type
+  // (openapi or json-schema) but the parser cannot confirm it, strict mode
+  // surfaces an error rather than silently returning empty results.
+  // In lenient mode (strictMode = false), unknown schemas degrade gracefully.
+  if (schemaType === 'unknown' && args.strictMode) {
+    return {
+      success: false,
+      endpoints: [],
+      rawFields: extractRawFields(parsed),
+      schemaType: 'unknown',
+      hasVersionPrefix: false,
+      error:
+        'Schema type could not be determined. Provide a valid OpenAPI 3.x document ' +
+        '(with an "openapi" key and "paths") or a JSON Schema (with "$schema" or "properties").',
+    }
+  }
+
   const endpoints =
     schemaType === 'openapi' ? extractOpenApiEndpoints(parsed) : []
   const rawFields =

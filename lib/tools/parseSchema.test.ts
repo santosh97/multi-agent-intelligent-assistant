@@ -98,10 +98,18 @@ describe('executeParseSchema — schema type detection', () => {
     expect(result.schemaType).toBe('json-schema')
   })
 
-  it('returns unknown for unrecognized schema format', async () => {
+  it('returns success:false in strict mode for unrecognized schema format', async () => {
     const result = await executeParseSchema({ schemaJson: UNKNOWN_SCHEMA, strictMode: true })
+    expect(result.success).toBe(false)
+    expect(result.schemaType).toBe('unknown')
+    expect(result.error).toMatch(/Schema type could not be determined/)
+  })
+
+  it('returns success:true in lenient mode for unrecognized schema format', async () => {
+    const result = await executeParseSchema({ schemaJson: UNKNOWN_SCHEMA, strictMode: false })
     expect(result.success).toBe(true)
     expect(result.schemaType).toBe('unknown')
+    expect(result.error).toBeUndefined()
   })
 })
 
