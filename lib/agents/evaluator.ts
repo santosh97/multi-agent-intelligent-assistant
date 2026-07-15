@@ -85,17 +85,10 @@ export async function runEvaluator(task: EvaluatorTask): Promise<EvaluatorResult
               // making the compliance report more actionable.
               const reorderedRules = reorderByPriority(task.businessRules, assessment.priorityRules)
 
-              // The LLM's riskLevel adjusts the effective severity threshold:
-              // if LLM assessed high risk, we also surface low-severity issues.
-              const effectiveThreshold =
-                assessment.riskLevel === 'high' ? 'low'
-                  : assessment.riskLevel === 'medium' ? task.severityThreshold
-                    : task.severityThreshold
-
               return await executeValidateRules({
                 analysisResult: task.analysisResult,
                 businessRules: reorderedRules,
-                severityThreshold: effectiveThreshold,
+                severityThreshold: task.severityThreshold,
               })
             },
           }),
