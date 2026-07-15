@@ -9,7 +9,7 @@
  *
  * Rules followed:
  * - export const dynamic = 'force-dynamic'
- * - streamText() + toDataStreamResponse() — never generateText()
+ * - streamText() + toUIMessageStreamResponse() — never generateText()
  * - All errors return typed shapes — nothing bubbles to HTTP layer unhandled
  * - GROQ_API_KEY only read via lib/config/models.ts (server-side only)
  */

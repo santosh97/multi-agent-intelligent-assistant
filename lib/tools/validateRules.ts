@@ -241,7 +241,7 @@ export async function executeValidateRules(
       violations: [],
       passedRules: [],
       unrecognizedRules: [],
-      score: 100,
+      score: 0,
       summary: isUnknown
         ? `Unknown schema format detected. No endpoints or JSON Schema properties found. Submit a valid OpenAPI 3.x document to run the audit.`
         : `JSON Schema detected — endpoint-level compliance rules do not apply. ` +

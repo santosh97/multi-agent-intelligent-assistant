@@ -63,9 +63,9 @@ export async function runEvaluator(task: EvaluatorTask): Promise<EvaluatorResult
     `Analyst findings:\n${analystSummary}\n\n` +
     `Business rules to enforce:\n${rulesText}\n\n` +
     `Based on the analyst findings, reason about which rules are most critical for this schema. ` +
-    `Consider: authentication issues are high risk for any API with external exposure; ` +
-    `versioning issues are medium risk; nullable field issues are lower risk. ` +
-    `Then call validateRules with your prioritized list and overall risk assessment.`
+    `Consider: authentication issues are high priority for any API with external exposure; ` +
+    `versioning issues are medium priority; nullable field issues are lower priority. ` +
+    `Then call validateRules with your prioritized list.`
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {

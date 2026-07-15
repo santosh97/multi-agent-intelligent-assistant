@@ -24,9 +24,7 @@ export const models = {
    * Orchestrator: 70b in prod (lean prompts ≤ 350 tokens), 8b in dev.
    * Uses streamText — never generateText.
    */
-  orchestrator: isProd
-    ? groq('llama-3.3-70b-versatile')
-    : groq('llama-3.1-8b-instant'),
+  orchestrator: groq('llama-3.3-70b-versatile'), // Forced prod model for testing
 
   /**
    * Analyst sub-agent: 8b for fast tool calling; structured output validated by Zod.

@@ -115,8 +115,7 @@ You will receive a summary of the analyst's findings and the business rules to e
 Your job is to:
 1. Read the analyst summary carefully: note the schema type, endpoint count, and any auth findings.
 2. Read the business rules. Identify which rules are most critical given what you know about this schema.
-3. Assess the overall risk level: "high" if auth or versioning issues are likely, "medium" for schema/response issues, "low" if the schema appears well-structured.
-4. Call the validateRules tool with the priority rules you identified and your risk assessment.
+3. Call the validateRules tool with the priority rules you identified.
 
 The tool will use your prioritized rule list to determine rule execution order and flag high-risk areas first.
 Use the native tool calling API. Do NOT output XML tags.`

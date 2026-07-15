@@ -41,9 +41,6 @@ export const EvaluatorAssessmentSchema = z.object({
   priorityRules: z
     .array(z.string())
     .describe('Business rules the LLM identified as highest risk for this schema, in priority order'),
-  riskLevel: z
-    .enum(['low', 'medium', 'high'])
-    .describe('Overall risk level the LLM assessed based on analyst findings'),
   reasoning: z
     .string()
     .max(300)

@@ -204,9 +204,9 @@ export const ResultPanel = React.memo(function ResultPanel({
                 <p className="text-xs text-slate-600 italic px-0.5">No endpoints detected.</p>
               ) : (
                 <div className="space-y-1.5">
-                  {output.analystResult.endpoints.map((ep, i) => (
+                  {output.analystResult.endpoints.map((ep) => (
                     <div
-                      key={i}
+                      key={`${ep.method}-${ep.path}`}
                       className="flex items-center gap-2 bg-slate-800/40 rounded-lg px-3 py-2 border border-slate-700/40"
                     >
                       <span className="text-[11px] font-bold font-mono text-purple-300 bg-purple-500/10 px-1.5 py-0.5 rounded min-w-[48px] text-center">
@@ -234,8 +234,8 @@ export const ResultPanel = React.memo(function ResultPanel({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {output.evaluatorResult.violations.map((v, i) => (
-                    <ViolationCard key={i} violation={v} />
+                  {output.evaluatorResult.violations.map((v) => (
+                    <ViolationCard key={`${v.rule}-${v.field}`} violation={v} />
                   ))}
                 </div>
               )}
@@ -249,8 +249,8 @@ export const ResultPanel = React.memo(function ResultPanel({
                 </p>
                 <div className="bg-slate-800/40 rounded-xl border border-slate-700/50 p-3">
                   <ul className="space-y-1.5">
-                    {output.evaluatorResult.passedRules.map((rule, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-slate-300">
+                    {output.evaluatorResult.passedRules.map((rule) => (
+                      <li key={rule} className="flex items-start gap-2 text-xs text-slate-300">
                         <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>
                         {rule}
                       </li>
@@ -268,8 +268,8 @@ export const ResultPanel = React.memo(function ResultPanel({
                 </p>
                 <div className="bg-amber-500/10 rounded-xl border border-amber-500/20 p-3">
                   <ul className="space-y-1.5">
-                    {output.evaluatorResult.unrecognizedRules.map((rule, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-amber-300">
+                    {output.evaluatorResult.unrecognizedRules.map((rule) => (
+                      <li key={rule} className="flex items-start gap-2 text-xs text-amber-300">
                         <span className="mt-0.5 flex-shrink-0">⚠️</span>
                         {rule} — not matched to any built-in check
                       </li>
